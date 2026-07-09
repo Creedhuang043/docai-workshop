@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: docai-demo
+    runtime: python
+    buildCommand: pip install -r demo_requirements.txt
+    startCommand: python demo_backend_main.py
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
