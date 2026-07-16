@@ -4,7 +4,7 @@
 
 ## 🌐 線上 Demo
 
-👉 **[點此體驗互動 Demo](https://your-username.github.io/your-repo-name/)** ← 推上 GitHub Pages 後更新此連結
+👉 **[點此體驗互動 Demo](https://Creedhuang043.github.io/docai-workshop/)**
 
 ## ✨ 課程成果
 
@@ -76,3 +76,6 @@ Gemma-3-27B 大語言模型
 ---
 
 *次世代 DocAI 系統工作坊 2026 — 學員實作成果*
+
+[![GitHub](https://img.shields.io/badge/GitHub-Creedhuang043-181717?logo=github)](https://github.com/Creedhuang043/docai-workshop)
+[![Demo](https://img.shields.io/badge/Demo-線上體驗-7c3aed)](https://Creedhuang043.github.io/docai-workshop/)
