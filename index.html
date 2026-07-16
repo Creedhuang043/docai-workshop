@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>次世代 DocAI 系統工作坊 — 成果展示</title>
+  <meta name="description" content="次世代 DocAI 系統工作坊 6 天課程成果展示，涵蓋 LangChain、LangGraph、RAG 等核心 AI 技術，由學員實作 Demo。">
+  <meta name="keywords" content="DocAI, LangChain, LangGraph, RAG, AI, 工作坊">
+  <meta property="og:title" content="次世代 DocAI 系統工作坊 成果展示">
+  <meta property="og:description" content="6 天 AI 開發課程的完整成果 — 數據提取、工作流、並行分析、RAG 檢索">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary:    #7c3aed;
+      --primary-l:  #a78bfa;
+      --accent:     #06b6d4;
+      --accent-l:   #67e8f9;
+      --green:      #10b981;
+      --orange:     #f59e0b;
+      --pink:       #ec4899;
+      --bg-dark:    #08080f;
+      --bg-card:    rgba(255,255,255,0.04);
+      --bg-card-h:  rgba(255,255,255,0.08);
+      --border:     rgba(255,255,255,0.08);
+      --border-h:   rgba(124,58,237,0.6);
+      --text:       #f1f5f9;
+      --text-muted: #94a3b8;
+      --glass:      rgba(15,15,30,0.7);
+      --radius:     16px;
+      --radius-sm:  10px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    ::selection { background: rgba(124,58,237,0.35); color: var(--text); }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
+
+    /* ===== CANVAS BACKGROUND ===== */
+    #bgCanvas {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 0; pointer-events: none;
+    }
+
+    /* ===== NAVBAR ===== */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 2rem;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(8,8,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 1rem; font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--primary-l); }
+    .nav-links {
+      display: flex; gap: 0.25rem;
+      list-style: none;
+    }
+    .nav-links a {
+      display: block; padding: 6px 14px;
+      color: var(--text-muted); text-decoration: none;
+      font-size: 0.875rem; font-weight: 500;
+      border-radius: 8px;
+      transition: var(--transition);
+    }
+    .nav-links a:hover { color: var(--text); background: var(--bg-card-h); }
+    .nav-badge {
+      padding: 5px 14px;
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      color: white; border-radius: 8px;
+      font-size: 0.8rem; font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .nav-badge:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    /* ===== SECTIONS ===== */
+    section { position: relative; z-index: 1; }
+
+    /* ===== HERO ===== */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 80px 2rem 4rem;
+      text-align: center;
+    }
+    .hero-inner { max-width: 860px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px;
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(124,58,237,0.4);
+      border-radius: 100px;
+      font-size: 0.8rem; font-weight: 600;
+      color: var(--primary-l);
+      margin-bottom: 1.75rem;
+      letter-spacing: 0.05em;
+    }
+    .hero-badge .dot {
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:.5; transform:scale(1.4); }
+    }
+    .hero-title {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+    .hero-title .grad {
+      background: linear-gradient(135deg, var(--primary-l) 0%, var(--accent-l) 60%, #f9a8d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.15rem; color: var(--text-muted);
+      max-width: 600px; margin: 0 auto 2.5rem;
+      font-weight: 400;
+    }
+    .hero-cta {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    }
+    .btn-primary-hero {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 28px;
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      color: white; border-radius: 12px;
+      font-size: 1rem; font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 0 32px rgba(124,58,237,0.35);
+      transition: var(--transition);
+    }
+    .btn-primary-hero:hover { transform: translateY(-2px); box-shadow: 0 0 48px rgba(124,58,237,0.55); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 28px;
+      border: 1px solid var(--border);
+      color: var(--text-muted); border-radius: 12px;
+      font-size: 1rem; font-weight: 600;
+      text-decoration: none;
+      backdrop-filter: blur(10px);
+      transition: var(--transition);
+    }
+    .btn-ghost:hover { border-color: var(--primary); color: var(--text); background: var(--bg-card-h); }
+
+    .hero-stats {
+      display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;
+      margin-top: 3.5rem;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-size: 2rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--primary-l), var(--accent-l));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
+    .stat-divider {
+      width: 1px; background: var(--border);
+      align-self: stretch; margin: 4px 0;
+    }
+
+    /* ===== SECTION LAYOUT ===== */
+    .section-wrap { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+    .section-header { text-align: center; margin-bottom: 3.5rem; }
+    .section-label {
+      display: inline-block;
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--primary-l);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 800; line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+    .section-desc { font-size: 1rem; color: var(--text-muted); max-width: 560px; margin: 0 auto; }
+
+    /* ===== TIMELINE ===== */
+    #timeline { padding: 7rem 0; }
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+    }
+    .day-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .day-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--card-accent, linear-gradient(90deg, var(--primary), var(--accent)));
+    }
+    .day-card:hover {
+      border-color: var(--border-h);
+      background: var(--bg-card-h);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(124,58,237,0.15);
+    }
+    .day-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px;
+      background: rgba(124,58,237,0.15);
+      border-radius: 100px;
+      font-size: 0.75rem; font-weight: 700;
+      color: var(--primary-l);
+      margin-bottom: 1rem;
+    }
+    .day-card h3 {
+      font-size: 1.05rem; font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .day-card p { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .day-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      padding: 3px 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.72rem; font-weight: 500;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* ===== DEMO SECTION ===== */
+    #demo { padding: 7rem 0; }
+    .demo-tabs {
+      display: flex; gap: 0.5rem; flex-wrap: wrap;
+      margin-bottom: 2rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      padding: 6px;
+      border-radius: 14px;
+    }
+    .demo-tab {
+      flex: 1; min-width: 130px;
+      padding: 10px 16px;
+      border: none; background: transparent;
+      color: var(--text-muted);
+      border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.875rem; font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .demo-tab:hover { color: var(--text); background: var(--bg-card-h); }
+    .demo-tab.active {
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      color: white;
+      box-shadow: 0 4px 16px rgba(124,58,237,0.35);
+    }
+    .demo-panel { display: none; }
+    .demo-panel.active { display: block; animation: fadeInUp 0.4s ease; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .demo-layout {
+      display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.25rem;
+    }
+    @media (max-width: 768px) { .demo-layout { grid-template-columns: 1fr; } }
+
+    .demo-input-card, .demo-output-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+    .card-header-title {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.875rem; font-weight: 600; color: var(--text-muted);
+    }
+    .card-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot-purple { background: var(--primary-l); }
+    .dot-cyan   { background: var(--accent); }
+    .dot-green  { background: var(--green); }
+    .dot-orange { background: var(--orange); }
+    .card-body { padding: 20px; }
+
+    .demo-examples {
+      display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;
+    }
+    .example-chip {
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.82rem; color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .example-chip:hover { border-color: var(--primary); color: var(--text); background: var(--bg-card-h); }
+    .example-chip.selected { border-color: var(--primary); background: rgba(124,58,237,0.12); color: var(--text); }
+    .example-chip .chip-arrow { margin-left: auto; font-size: 0.75rem; opacity: 0.5; }
+
+    .demo-input-area {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      resize: vertical;
+      min-height: 100px;
+      transition: var(--transition);
+    }
+    .demo-input-area:focus { outline: none; border-color: var(--primary); background: rgba(124,58,237,0.06); }
+    .demo-run-btn {
+      margin-top: 12px;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--primary), #4f46e5);
+      color: white; border: none; border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem; font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .demo-run-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,58,237,0.4); }
+    .demo-run-btn:active { transform: translateY(0); }
+    .demo-run-btn.running { opacity: 0.8; cursor: not-allowed; }
+
+    /* Output */
+    .output-empty {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 220px;
+      color: var(--text-muted); text-align: center;
+    }
+    .output-empty .icon { font-size: 2.5rem; margin-bottom: 0.75rem; opacity: 0.4; }
+    .output-empty p { font-size: 0.875rem; }
+
+    .output-result { display: none; }
+    .output-result.show { display: block; }
+
+    .output-meta {
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 14px; flex-wrap: wrap;
+    }
+    .meta-badge {
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem; font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .meta-success { background: rgba(16,185,129,0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+    .meta-model   { background: rgba(6,182,212,0.12);   color: var(--accent); border: 1px solid rgba(6,182,212,0.25); }
+    .meta-time    { background: rgba(245,158,11,0.12);  color: var(--orange); border: 1px solid rgba(245,158,11,0.25); }
+
+    .code-block {
+      background: #0d1117;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      overflow-x: auto;
+      white-space: pre;
+    }
+    .json-key   { color: #79c0ff; }
+    .json-str   { color: #a5d6ff; }
+    .json-num   { color: #f0883e; }
+    .json-null  { color: #ff7b72; }
+    .json-bool  { color: #ff7b72; }
+
+    .step-list { display: flex; flex-direction: column; gap: 10px; }
+    .step-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      animation: stepIn 0.3s ease both;
+    }
+    @keyframes stepIn {
+      from { opacity:0; transform: translateX(-8px); }
+      to   { opacity:1; transform: translateX(0); }
+    }
+    .step-icon {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; flex-shrink: 0;
+    }
+    .step-icon.agent  { background: rgba(124,58,237,0.2); }
+    .step-icon.tools  { background: rgba(6,182,212,0.2); }
+    .step-icon.output { background: rgba(16,185,129,0.2); }
+    .step-content .step-node { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 3px; }
+    .step-content .step-msg  { font-size: 0.85rem; color: var(--text); }
+
+    .parallel-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 500px) { .parallel-cols { grid-template-columns: 1fr; } }
+    .parallel-col-label {
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .parallel-col-body {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 0.875rem; line-height: 1.65;
+    }
+
+    .rag-docs { margin-bottom: 14px; }
+    .rag-doc-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      margin-bottom: 8px;
+      font-size: 0.82rem; line-height: 1.55;
+    }
+    .rag-doc-score {
+      flex-shrink: 0;
+      padding: 2px 8px;
+      background: rgba(16,185,129,0.12);
+      color: var(--green);
+      border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; font-weight: 600;
+      margin-top: 2px;
+    }
+    .rag-answer {
+      background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(6,182,212,0.08));
+      border: 1px solid rgba(124,58,237,0.25);
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 0.9rem; line-height: 1.7;
+    }
+    .rag-answer-label {
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--primary-l); margin-bottom: 8px;
+    }
+
+    /* Progress bar */
+    .progress-bar-wrap {
+      height: 4px; background: rgba(255,255,255,0.06);
+      border-radius: 2px; overflow: hidden; margin-bottom: 16px;
+    }
+    .progress-bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 2px;
+      transition: width 0.08s linear;
+    }
+
+    /* typing cursor */
+    .typing::after { content: '|'; animation: blink 0.7s infinite; color: var(--primary-l); }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ===== ARCHITECTURE ===== */
+    #arch { padding: 7rem 0; }
+    .arch-diagram {
+      display: flex; flex-direction: column; align-items: center; gap: 0;
+      max-width: 560px; margin: 0 auto;
+    }
+    .arch-layer {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 24px;
+      display: flex; align-items: center; gap: 14px;
+      transition: var(--transition);
+    }
+    .arch-layer:hover { border-color: var(--border-h); background: var(--bg-card-h); }
+    .arch-layer-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+    .arch-layer-info { flex: 1; }
+    .arch-layer-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 3px; }
+    .arch-layer-desc  { font-size: 0.8rem; color: var(--text-muted); }
+    .arch-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+
+    .arch-arrow {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 4px 0;
+      color: var(--text-muted); font-size: 0.72rem;
+    }
+    .arch-arrow-line {
+      width: 2px; height: 24px;
+      background: linear-gradient(180deg, var(--primary), var(--accent));
+      border-radius: 1px;
+      margin-bottom: 4px;
+    }
+    .arch-arrow-text { font-size: 0.72rem; color: var(--text-muted); }
+
+    /* ===== TECH STACK ===== */
+    #tech { padding: 7rem 0; }
+    .tech-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .tech-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: var(--transition);
+    }
+    .tech-card:hover { border-color: var(--border-h); transform: translateY(-3px); background: var(--bg-card-h); }
+    .tech-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .tech-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .tech-desc { font-size: 0.78rem; color: var(--text-muted); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+    }
+    footer a { color: var(--primary-l); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-inner { max-width: 600px; margin: 0 auto; }
+    .footer-logo { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text); }
+    .footer-logo span { color: var(--primary-l); }
+
+    /* ===== ANIMATIONS ===== */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ===== MOBILE ===== */
+    @media (max-width: 640px) {
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .section-wrap { padding: 0 1rem; }
+      .hero-stats { gap: 1.25rem; }
+      .stat-divider { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#hero" class="nav-logo">🤖 <span>DocAI</span> Workshop</a>
+  <ul class="nav-links">
+    <li><a href="#timeline">課程</a></li>
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#arch">架構</a></li>
+    <li><a href="#tech">技術棧</a></li>
+  </ul>
+  <a href="https://github.com" target="_blank" class="nav-badge">⭐ GitHub</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <div class="dot"></div>
+      次世代 DocAI 系統工作坊 — 2026
+    </div>
+    <h1 class="hero-title">
+      用 AI 重新定義<br>
+      <span class="grad">文件處理的未來</span>
+    </h1>
+    <p class="hero-sub">
+      6 天深度學習成果展示 — 從 LangChain 鏈式處理到 RAG 檢索增強生成，
+      打造下一代智能文件分析系統。
+    </p>
+    <div class="hero-cta">
+      <a href="#demo" class="btn-primary-hero">🚀 體驗互動 Demo</a>
+      <a href="#timeline" class="btn-ghost">📚 查看課程內容</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">6</div>
+        <div class="stat-label">天課程</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-num">4</div>
+        <div class="stat-label">核心 Demo</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-num">5+</div>
+        <div class="stat-label">AI 技術</div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">實作完成</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-label">📅 課程脈絡</div>
+      <h2 class="section-title">6 天，從零到完整 AI 系統</h2>
+      <p class="section-desc">每一天都有明確的技術目標與實作成果，循序漸進建立完整的 DocAI 系統能力</p>
+    </div>
+    <div class="timeline-grid">
+      <div class="day-card reveal" style="--card-accent: linear-gradient(90deg,#f59e0b,#ef4444)">
+        <div class="day-badge">📅 Day 1</div>
+        <h3>Git 版本控制 & 前端基礎</h3>
+        <p>學習協作開發的基礎工具，建立 HTML/CSS 前端技能，理解現代 Web 開發流程。</p>
+        <div class="day-tags">
+          <span class="tag">Git</span>
+          <span class="tag">GitHub</span>
+          <span class="tag">HTML</span>
+          <span class="tag">CSS</span>
+        </div>
+      </div>
+      <div class="day-card reveal" style="--card-accent: linear-gradient(90deg,#7c3aed,#4f46e5)">
+        <div class="day-badge">📅 Day 2</div>
+        <h3>LangChain 鏈式處理</h3>
+        <p>掌握 LangChain 核心概念，建立 LLM Chain、Prompt Template，實作 JSON 結構化資料提取。</p>
+        <div class="day-tags">
+          <span class="tag">LangChain</span>
+          <span class="tag">ChatOpenAI</span>
+          <span class="tag">JsonOutputParser</span>
+          <span class="tag">PromptTemplate</span>
+        </div>
+      </div>
+      <div class="day-card reveal" style="--card-accent: linear-gradient(90deg,#06b6d4,#3b82f6)">
+        <div class="day-badge">📅 Day 3</div>
+        <h3>Tool 調用 & LangGraph 狀態機</h3>
+        <p>學習 Function Calling 工具整合，使用 LangGraph 建立多步驟 AI 工作流，實作訂單處理 Agent。</p>
+        <div class="day-tags">
+          <span class="tag">LangGraph</span>
+          <span class="tag">Tool Calling</span>
+          <span class="tag">StateGraph</span>
+          <span class="tag">Agent</span>
+        </div>
+      </div>
+      <div class="day-card reveal" style="--card-accent: linear-gradient(90deg,#10b981,#059669)">
+        <div class="day-badge">📅 Day 4</div>
+        <h3>並行處理 & 高級技術</h3>
+        <p>使用 RunnableParallel 實現並行鏈式處理，探討反射機制與快取最佳化策略。</p>
+        <div class="day-tags">
+          <span class="tag">RunnableParallel</span>
+          <span class="tag">Reflection</span>
+          <span class="tag">Caching</span>
+          <span class="tag">Streaming</span>
+        </div>
+      </div>
+      <div class="day-card reveal" style="--card-accent: linear-gradient(90deg,#ec4899,#db2777)" style="grid-column: span 1">
+        <div class="day-badge">📅 Day 5</div>
+        <h3>RAG 系統基礎</h3>
+        <p>理解 RAG（檢索增強生成）原理，建立文件向量化流程，實作相似度檢索與上下文注入。</p>
+        <div class="day-tags">
+          <span class="tag">RAG</span>
+          <span class="tag">Embedding</span>
+          <span class="tag">Vector Store</span>
+          <span class="tag">Retriever</span>
+        </div>
+      </div>
+      <div class="day-card reveal" style="--card-accent: linear-gradient(90deg,#f97316,#ef4444)">
+        <div class="day-badge">📅 Day 6</div>
+        <h3>RAG 進階 & 系統整合</h3>
+        <p>進階 RAG 技術（重排序、多查詢），將所有技術整合為完整的 DocAI 系統，部署上線。</p>
+        <div class="day-tags">
+          <span class="tag">Re-ranking</span>
+          <span class="tag">Multi-Query</span>
+          <span class="tag">FastAPI</span>
+          <span class="tag">Deployment</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section id="demo">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-label">🎯 互動展示</div>
+      <h2 class="section-title">4 大核心功能 Demo</h2>
+      <p class="section-desc">選擇功能，輸入範例文字，即時體驗 AI 處理效果</p>
+    </div>
+
+    <div class="demo-tabs reveal" id="demoTabs">
+      <button class="demo-tab active" data-panel="extraction" onclick="switchTab('extraction')">
+        ✨ 數據提取 <small style="opacity:.6;font-size:.7em">Day 2</small>
+      </button>
+      <button class="demo-tab" data-panel="workflow" onclick="switchTab('workflow')">
+        🔄 工作流 <small style="opacity:.6;font-size:.7em">Day 3</small>
+      </button>
+      <button class="demo-tab" data-panel="parallel" onclick="switchTab('parallel')">
+        ⚡ 並行分析 <small style="opacity:.6;font-size:.7em">Day 4</small>
+      </button>
+      <button class="demo-tab" data-panel="rag" onclick="switchTab('rag')">
+        🔍 RAG 檢索 <small style="opacity:.6;font-size:.7em">Day 5-6</small>
+      </button>
+    </div>
+
+    <!-- Panel: Extraction -->
+    <div class="demo-panel active" id="panel-extraction">
+      <div class="demo-layout">
+        <div class="demo-input-card">
+          <div class="card-header">
+            <div class="card-header-title"><div class="card-dot dot-purple"></div>輸入文件</div>
+            <span style="font-size:.75rem;color:var(--text-muted)">Day 2 · LangChain</span>
+          </div>
+          <div class="card-body">
+            <div class="demo-examples">
+              <div class="example-chip selected" onclick="setInput('extraction',0,this)">
+                <span>📦</span>
+                <span>訂購筆電範例</span>
+                <span class="chip-arrow">→</span>
+              </div>
+              <div class="example-chip" onclick="setInput('extraction',1,this)">
+                <span>🛒</span>
+                <span>手機訂單範例</span>
+                <span class="chip-arrow">→</span>
+              </div>
+              <div class="example-chip" onclick="setInput('extraction',2,this)">
+                <span>📋</span>
+                <span>客製化文字</span>
+                <span class="chip-arrow">→</span>
+              </div>
+            </div>
+            <textarea class="demo-input-area" id="input-extraction" rows="5">我叫陳大明，電話是 0912-345-678，我想要訂購 3 台筆記型電腦，下週五送到台中市北區。</textarea>
+            <button class="demo-run-btn" id="btn-extraction" onclick="runDemo('extraction')">
+              <span>🚀</span> 開始提取
+            </button>
+          </div>
+        </div>
+        <div class="demo-output-card">
+          <div class="card-header">
+            <div class="card-header-title"><div class="card-dot dot-green"></div>提取結果</div>
+            <span id="time-extraction" style="font-size:.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace"></span>
+          </div>
+          <div class="card-body">
+            <div class="output-empty" id="empty-extraction">
+              <div class="icon">📊</div>
+              <p>點擊「開始提取」<br>AI 將從文字中提取結構化資料</p>
+            </div>
+            <div class="output-result" id="result-extraction">
+              <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-extraction"></div></div>
+              <div class="output-meta">
+                <span class="meta-badge meta-success">✅ success</span>
+                <span class="meta-badge meta-model">gemma-3-27b-it</span>
+                <span class="meta-badge meta-time" id="elapsed-extraction">-- ms</span>
+              </div>
+              <div class="code-block" id="code-extraction"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Workflow -->
+    <div class="demo-panel" id="panel-workflow">
+      <div class="demo-layout">
+        <div class="demo-input-card">
+          <div class="card-header">
+            <div class="card-header-title"><div class="card-dot dot-cyan"></div>訂單輸入</div>
+            <span style="font-size:.75rem;color:var(--text-muted)">Day 3 · LangGraph</span>
+          </div>
+          <div class="card-body">
+            <div class="demo-examples">
+              <div class="example-chip selected" onclick="setInput('workflow',0,this)">
+                <span>📦</span><span>大量筆電訂單</span><span class="chip-arrow">→</span>
+              </div>
+              <div class="example-chip" onclick="setInput('workflow',1,this)">
+                <span>⚠️</span><span>資料不完整訂單</span><span class="chip-arrow">→</span>
+              </div>
+            </div>
+            <textarea class="demo-input-area" id="input-workflow" rows="5">我要訂購 10 台筆電，客戶名稱是李美琪，電話 0988-888-888，地址台南市。</textarea>
+            <button class="demo-run-btn" id="btn-workflow" onclick="runDemo('workflow')">
+              <span>🔄</span> 執行工作流
+            </button>
+          </div>
+        </div>
+        <div class="demo-output-card">
+          <div class="card-header">
+            <div class="card-header-title"><div class="card-dot dot-cyan"></div>工作流執行步驟</div>
+            <span id="time-workflow" style="font-size:.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace"></span>
+          </div>
+          <div class="card-body">
+            <div class="output-empty" id="empty-workflow">
+              <div class="icon">🔄</div>
+              <p>點擊「執行工作流」<br>觀看 LangGraph Agent 逐步處理</p>
+            </div>
+            <div class="output-result" id="result-workflow">
+              <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-workflow"></div></div>
+              <div class="output-meta">
+                <span class="meta-badge meta-success">✅ completed</span>
+                <span class="meta-badge meta-model">LangGraph</span>
+                <span class="meta-badge meta-time" id="elapsed-workflow">-- ms</span>
+              </div>
+              <div class="step-list" id="steps-workflow"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Parallel -->
+    <div class="demo-panel" id="panel-parallel">
+      <div class="demo-layout">
+        <div class="demo-input-card">
+          <div class="card-header">
+            <div class="card-header-title"><div class="card-dot dot-orange"></div>主題輸入</div>
+            <span style="font-size:.75rem;color:var(--text-muted)">Day 4 · RunnableParallel</span>
+          </div>
+          <div class="card-body">
+            <div class="demo-examples">
+              <div class="example-chip selected" onclick="setInput('parallel',0,this)">
+                <span>🤖</span><span>人工智能的未來</span><span class="chip-arrow">→</span>
+              </div>
+              <div class="example-chip" onclick="setInput('parallel',1,this)">
+                <span>🌏</span><span>遠端工作趨勢</span><span class="chip-arrow">→</span>
+              </div>
+              <div class="example-chip" onclick="setInput('parallel',2,this)">
+                <span>💡</span><span>永續能源發展</span><span class="chip-arrow">→</span>
+              </div>
+            </div>
+            <textarea class="demo-input-area" id="input-parallel" rows="3">人工智能的未來發展</textarea>
+            <button class="demo-run-btn" id="btn-parallel" onclick="runDemo('parallel')">
+              <span>⚡</span> 並行分析
+            </button>
+          </div>
+        </div>
+        <div class="demo-output-card">
+          <div class="card-header">
+            <div class="card-header-title"><div class="card-dot dot-orange"></div>雙視角輸出</div>
+            <span id="time-parallel" style="font-size:.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace"></span>
+          </div>
+          <div class="card-body">
+            <div class="output-empty" id="empty-parallel">
+              <div class="icon">⚡</div>
+              <p>點擊「並行分析」<br>同時從 LinkedIn & Instagram 視角生成內容</p>
+            </div>
+            <div class="output-result" id="result-parallel">
+              <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-parallel"></div></div>
+              <div class="output-meta">
+                <span class="meta-badge meta-success">✅ parallel done</span>
+                <span class="meta-badge meta-model">chains: 2</span>
+                <span class="meta-badge meta-time" id="elapsed-parallel">-- ms</span>
+              </div>
+              <div class="parallel-cols">
+                <div>
+                  <div class="parallel-col-label">💼 LinkedIn 專家</div>
+                  <div class="parallel-col-body" id="linkedin-output"></div>
+                </div>
+                <div>
+                  <div class="parallel-col-label">📸 Instagram 網紅</div>
+                  <div class="parallel-col-body" id="instagram-output"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: RAG -->
+    <div class="demo-panel" id="panel-rag">
+      <div class="demo-layout">
+        <div class="demo-input-card">
+          <div class="card-header">
+            <div class="card-header-title"><div class="card-dot dot-purple"></div>問題輸入</div>
+            <span style="font-size:.75rem;color:var(--text-muted)">Day 5-6 · RAG</span>
+          </div>
+          <div class="card-body">
+            <div class="demo-examples">
+              <div class="example-chip selected" onclick="setInput('rag',0,this)">
+                <span>❓</span><span>什麼是 LangGraph？</span><span class="chip-arrow">→</span>
+              </div>
+              <div class="example-chip" onclick="setInput('rag',1,this)">
+                <span>❓</span><span>RAG 的工作流程</span><span class="chip-arrow">→</span>
+              </div>
+              <div class="example-chip" onclick="setInput('rag',2,this)">
+                <span>❓</span><span>這個工作坊學什麼？</span><span class="chip-arrow">→</span>
+              </div>
+            </div>
+            <textarea class="demo-input-area" id="input-rag" rows="3">什麼是 LangGraph？</textarea>
+            <button class="demo-run-btn" id="btn-rag" onclick="runDemo('rag')">
+              <span>🔍</span> RAG 檢索
+            </button>
+          </div>
+        </div>
+        <div class="demo-output-card">
+          <div class="card-header">
+            <div class="card-header-title"><div class="card-dot dot-purple"></div>檢索結果</div>
+            <span id="time-rag" style="font-size:.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace"></span>
+          </div>
+          <div class="card-body">
+            <div class="output-empty" id="empty-rag">
+              <div class="icon">🔍</div>
+              <p>點擊「RAG 檢索」<br>AI 將搜尋文件庫並生成有根據的回答</p>
+            </div>
+            <div class="output-result" id="result-rag">
+              <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-rag"></div></div>
+              <div class="output-meta">
+                <span class="meta-badge meta-success">✅ retrieved</span>
+                <span class="meta-badge meta-model">RAG Pipeline</span>
+                <span class="meta-badge meta-time" id="elapsed-rag">-- ms</span>
+              </div>
+              <div class="rag-docs" id="rag-docs"></div>
+              <div class="rag-answer">
+                <div class="rag-answer-label">🤖 AI 回答</div>
+                <div id="rag-answer-text"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="arch">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-label">🏗️ 系統架構</div>
+      <h2 class="section-title">完整的 DocAI 技術棧</h2>
+      <p class="section-desc">從使用者介面到底層 LLM，每一層都有對應的技術實現</p>
+    </div>
+    <div class="arch-diagram reveal">
+      <div class="arch-layer">
+        <div class="arch-layer-icon" style="background:rgba(245,158,11,0.15);font-size:1.4rem">🌐</div>
+        <div class="arch-layer-info">
+          <div class="arch-layer-title">前端介面</div>
+          <div class="arch-layer-desc">Vanilla HTML / CSS / JavaScript</div>
+          <div class="arch-tags">
+            <span class="tag">fetch API</span>
+            <span class="tag">Glassmorphism UI</span>
+            <span class="tag">動態效果</span>
+          </div>
+        </div>
+      </div>
+      <div class="arch-arrow">
+        <div class="arch-arrow-line"></div>
+        <div class="arch-arrow-text">HTTP / REST API</div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-icon" style="background:rgba(124,58,237,0.15);font-size:1.4rem">⚡</div>
+        <div class="arch-layer-info">
+          <div class="arch-layer-title">後端 API 服務</div>
+          <div class="arch-layer-desc">FastAPI + Uvicorn (Python)</div>
+          <div class="arch-tags">
+            <span class="tag">FastAPI</span>
+            <span class="tag">Pydantic</span>
+            <span class="tag">CORS</span>
+            <span class="tag">Async</span>
+          </div>
+        </div>
+      </div>
+      <div class="arch-arrow">
+        <div class="arch-arrow-line"></div>
+        <div class="arch-arrow-text">LangChain Invoke</div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-icon" style="background:rgba(6,182,212,0.15);font-size:1.4rem">🔗</div>
+        <div class="arch-layer-info">
+          <div class="arch-layer-title">AI 邏輯層</div>
+          <div class="arch-layer-desc">LangChain + LangGraph</div>
+          <div class="arch-tags">
+            <span class="tag">Chain</span>
+            <span class="tag">StateGraph</span>
+            <span class="tag">RAG</span>
+            <span class="tag">Parallel</span>
+          </div>
+        </div>
+      </div>
+      <div class="arch-arrow">
+        <div class="arch-arrow-line"></div>
+        <div class="arch-arrow-text">OpenAI Compatible API</div>
+      </div>
+      <div class="arch-layer">
+        <div class="arch-layer-icon" style="background:rgba(16,185,129,0.15);font-size:1.4rem">🧠</div>
+        <div class="arch-layer-info">
+          <div class="arch-layer-title">大語言模型</div>
+          <div class="arch-layer-desc">Google Gemma-3-27B</div>
+          <div class="arch-tags">
+            <span class="tag">gemma-3-27b-it</span>
+            <span class="tag">Qwen2.5-1.5B</span>
+            <span class="tag">vLLM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="tech">
+  <div class="section-wrap">
+    <div class="section-header reveal">
+      <div class="section-label">🛠️ 技術棧</div>
+      <h2 class="section-title">使用的核心技術</h2>
+      <p class="section-desc">工業級 AI 開發工具，涵蓋從框架到部署的完整生態系統</p>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card reveal">
+        <div class="tech-icon">🔗</div>
+        <div class="tech-name">LangChain</div>
+        <div class="tech-desc">LLM 應用開發框架<br>Chain、Prompt、Parser</div>
+      </div>
+      <div class="tech-card reveal">
+        <div class="tech-icon">🕸️</div>
+        <div class="tech-name">LangGraph</div>
+        <div class="tech-desc">圖形化 AI 工作流<br>StateGraph、Agent</div>
+      </div>
+      <div class="tech-card reveal">
+        <div class="tech-icon">⚡</div>
+        <div class="tech-name">FastAPI</div>
+        <div class="tech-desc">高效能 Python API<br>非同步、自動文件</div>
+      </div>
+      <div class="tech-card reveal">
+        <div class="tech-icon">🧠</div>
+        <div class="tech-name">Gemma-3-27B</div>
+        <div class="tech-desc">Google 開源大模型<br>27B 參數、多語言</div>
+      </div>
+      <div class="tech-card reveal">
+        <div class="tech-icon">🔍</div>
+        <div class="tech-name">RAG</div>
+        <div class="tech-desc">檢索增強生成<br>向量檢索 + LLM</div>
+      </div>
+      <div class="tech-card reveal">
+        <div class="tech-icon">🐍</div>
+        <div class="tech-name">Python</div>
+        <div class="tech-desc">後端核心語言<br>Pydantic、asyncio</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">🤖 <span>DocAI</span> Workshop</div>
+    <p style="margin-bottom:.5rem">次世代 DocAI 系統工作坊 — 6 天課程成果展示</p>
+    <p>Built with ❤️ by 學員 &nbsp;|&nbsp; <a href="https://github.com" target="_blank">GitHub Repo</a></p>
+  </div>
+</footer>
+
+<script>
+/* ===== PARTICLE BACKGROUND ===== */
+(function(){
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], lines = [];
+
+  function resize(){ W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor(){
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.r = Math.random() * 1.5 + 0.4;
+      this.vx = (Math.random() - 0.5) * 0.3;
+      this.vy = (Math.random() - 0.5) * 0.3;
+      this.alpha = Math.random() * 0.5 + 0.1;
+    }
+    update(){
+      this.x += this.vx; this.y += this.vy;
+      if(this.x < 0) this.x = W; if(this.x > W) this.x = 0;
+      if(this.y < 0) this.y = H; if(this.y > H) this.y = 0;
+    }
+    draw(){
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(160,130,255,${this.alpha})`;
+      ctx.fill();
+    }
+  }
+
+  for(let i=0; i < 80; i++) particles.push(new Particle());
+
+  const DIST = 120;
+  function animate(){
+    ctx.clearRect(0,0,W,H);
+    // gradient bg overlay
+    const g = ctx.createRadialGradient(W*.5,H*.4,0,W*.5,H*.4,H*.8);
+    g.addColorStop(0,'rgba(30,10,60,0.55)');
+    g.addColorStop(1,'rgba(8,8,15,0)');
+    ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+
+    particles.forEach(p => { p.update(); p.draw(); });
+
+    for(let i=0; i<particles.length; i++){
+      for(let j=i+1; j<particles.length; j++){
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const d = Math.sqrt(dx*dx+dy*dy);
+        if(d < DIST){
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(124,58,237,${0.12*(1-d/DIST)})`;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+/* ===== SCROLL REVEAL ===== */
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); } });
+},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+/* ===== DEMO DATA ===== */
+const DEMO_DATA = {
+  extraction: {
+    inputs: [
+      "我叫陳大明，電話是 0912-345-678，我想要訂購 3 台筆記型電腦，下週五送到台中市北區。",
+      "客戶王小華，手機 0933-111-222，需要 2 支 iPhone 15，地址：新北市板橋區文化路100號。",
+      "（自行輸入文字內容）"
+    ],
+    results: [
+      { name:"陳大明", phone:"0912-345-678", product:"筆記型電腦", quantity:3, location:"台中市北區" },
+      { name:"王小華", phone:"0933-111-222", product:"iPhone 15",  quantity:2, location:"新北市板橋區文化路100號" },
+      { name:"範例客戶", phone:"0900-000-000", product:"商品名稱",   quantity:1, location:"台北市" }
+    ]
+  },
+  workflow: {
+    inputs: [
+      "我要訂購 10 台筆電，客戶名稱是李美琪，電話 0988-888-888，地址台南市。",
+      "訂購 5 台顯示器，但我不確定送貨地址在哪，待確認。"
+    ],
+    steps_ok: [
+      { type:'agent',  icon:'🤖', node:'[agent] 分析輸入',  msg:'解析使用者需求：訂購 10 台筆電，已識別客戶資料。' },
+      { type:'tools',  icon:'🔧', node:'[tool] 資料提取',   msg:'調用 extraction_tool → name:李美琪 / qty:10 / location:台南市' },
+      { type:'tools',  icon:'✅', node:'[tool] 驗證資料',   msg:'所有必填欄位完整，數量 10 超過閾值，標記為大宗訂單。' },
+      { type:'agent',  icon:'📋', node:'[agent] 生成回應',  msg:'訂單已建立，大宗優惠適用，預計 3-5 個工作日到貨。' },
+      { type:'output', icon:'🎉', node:'[END] 流程完成',    msg:'工作流結束，共執行 4 個節點，耗時 3.2 秒。' }
+    ],
+    steps_err: [
+      { type:'agent',  icon:'🤖', node:'[agent] 分析輸入',  msg:'解析使用者需求：訂購 5 台顯示器，地址欄位缺失。' },
+      { type:'tools',  icon:'🔧', node:'[tool] 資料提取',   msg:'調用 extraction_tool → product:顯示器 / qty:5 / location:null' },
+      { type:'tools',  icon:'⚠️', node:'[tool] 驗證資料',   msg:'驗證失敗：location 為必填欄位，進入補件流程。' },
+      { type:'agent',  icon:'📩', node:'[agent] 請求補件',  msg:'已回覆客戶補齊地址資訊，訂單狀態設為「待確認」。' },
+      { type:'output', icon:'⏸️', node:'[PAUSE] 等待補件',  msg:'工作流暫停，等待客戶回覆地址後繼續。' }
+    ]
+  },
+  parallel: {
+    inputs: ["人工智能的未來發展", "遠端工作趨勢", "永續能源發展"],
+    linkedin: [
+      "人工智能正在重塑全球產業格局。企業領導者需立即評估 AI 帶來的效率提升機會，同時建立完善的風險管理框架。未來三年，AI 素養將成為職場競爭力的核心指標。",
+      "遠端工作已不再是疫情副產品，而是人才競爭的新戰場。根據最新數據，提供彈性工作的企業人才留任率提升 35%。組織需重新設計協作流程與績效評估體系。",
+      "永續能源轉型是當代最重要的商業策略議題。ESG 報告顯示，積極佈局再生能源的企業，在資本市場的估值溢價達 18%。現在投資綠色技術，就是投資企業的未來競爭力。"
+    ],
+    instagram: [
+      "🤖 AI 來啦！你準備好了嗎？💡\n機器不是來搶你工作的——是來讓你更強大的！\n學 AI、用 AI、愛 AI！\n#AI革命 #未來已來 #科技改變生活 #人工智能 🚀✨",
+      "🏠💻 在家工作 = 人生勝利組！\n省通勤時間、穿著舒適、隨時抱貓辦公！\n遠端工作讓生活更 balance～\n#居家辦公 #WFH #工作與生活平衡 #自由工作者 ☕🐱",
+      "🌱☀️ 地球在呼救，我們來救場！\n太陽能、風力、電動車——綠色未來超帥氣！\n每個人的小選擇，都是地球的大改變！\n#永續生活 #綠色能源 #環保 #地球的未來我們決定 🌍💚"
+    ]
+  },
+  rag: {
+    inputs: ["什麼是 LangGraph？", "RAG 的工作流程", "這個工作坊學什麼？"],
+    docs: [
+      [
+        { score:"0.95", text:"LangGraph 是 LangChain 的圖形處理擴展，使用狀態機模型定義複雜的 AI 工作流。核心概念包括 State（系統狀態）、Node（處理節點）、Edge（節點連接）..." },
+        { score:"0.82", text:"LangChain 是一個用於開發 LLM 應用程序的框架，核心概念包括 Chains（組合多步驟序列）、Prompts、Memory、Tools 與 Agents..." },
+        { score:"0.71", text:"RAG（檢索增強生成）是一種結合信息檢索和生成的技術，工作流程為：用戶提問 → 從文件庫檢索 → 注入上下文 → LLM 生成回答..." }
+      ],
+      [
+        { score:"0.97", text:"RAG（檢索增強生成）工作流程：1. 用戶提出問題 2. 系統從文檔庫中檢索相關信息 3. 將檢索的信息作為上下文 4. LLM 基於上下文生成答案..." },
+        { score:"0.78", text:"LangChain 的向量資料庫整合支援 FAISS、Chroma、Pinecone 等，配合 Embedding 模型將文件轉為向量，再以相似度搜尋找出相關片段..." },
+        { score:"0.65", text:"次世代 DocAI 系統工作坊 Day 5-6 專注於 RAG 系統實作，從文件切割、向量化到檢索策略，完整建立企業級知識庫問答系統..." }
+      ],
+      [
+        { score:"0.98", text:"次世代 DocAI 系統工作坊是一個全面的 AI 開發課程，為期 6 天，涵蓋 Git 版本控制、LangChain 鏈式處理、LangGraph 工作流、RAG 系統..." },
+        { score:"0.87", text:"課程採用 Python + FastAPI + LangChain 技術棧，搭配 Google Gemma-3-27B 大型語言模型，讓學員從零開始建立完整的 AI 文件分析系統..." },
+        { score:"0.74", text:"AI 基礎知識：人工智能是計算機科學的分支，主要應用包括機器學習、自然語言處理、計算機視覺與機器人技術..." }
+      ]
+    ],
+    answers: [
+      "LangGraph 是 LangChain 框架的圖形化工作流擴展，使用狀態機模型（State Machine）來定義複雜的多步驟 AI 流程。它的核心組件包括 State（記錄系統狀態）、Node（執行處理邏輯）、Edge（決定流程走向），特別適合構建需要條件分支和迴圈的 Agent 系統。",
+      "RAG 的完整工作流程分為四個階段：① 用戶輸入問題 → ② 系統將問題轉為向量，在文件庫中進行相似度搜尋，檢索最相關的 Top-K 文件片段 → ③ 將檢索到的文件作為上下文（Context）注入 Prompt → ④ LLM 基於上下文生成有根據的答案，大幅降低幻覺（Hallucination）問題。",
+      "這個工作坊為期 6 天，學習路徑從 Git 版本控制與前端基礎（Day 1）出發，逐步進入 LangChain 鏈式處理（Day 2）、LangGraph 工作流與 Tool Calling（Day 3）、並行處理（Day 4），最終實作完整的 RAG 檢索增強生成系統（Day 5-6），目標是讓學員能夠獨立開發企業級 AI 文件分析應用。"
+    ]
+  }
+};
+
+/* ===== TAB SWITCH ===== */
+function switchTab(name){
+  document.querySelectorAll('.demo-tab').forEach(t=>{
+    t.classList.toggle('active', t.dataset.panel === name);
+  });
+  document.querySelectorAll('.demo-panel').forEach(p=>{
+    p.classList.toggle('active', p.id === 'panel-'+name);
+  });
+}
+
+/* ===== SET INPUT FROM EXAMPLE ===== */
+function setInput(type, idx, el){
+  el.closest('.demo-examples').querySelectorAll('.example-chip')
+    .forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  const inputs = DEMO_DATA[type].inputs;
+  if(idx < inputs.length && inputs[idx] !== '（自行輸入文字內容）'){
+    document.getElementById('input-'+type).value = inputs[idx];
+  } else {
+    document.getElementById('input-'+type).value = '';
+    document.getElementById('input-'+type).focus();
+  }
+}
+
+/* ===== PROGRESS ===== */
+function animateProgress(id, duration){
+  const bar = document.getElementById('prog-'+id);
+  bar.style.width = '0%';
+  const start = Date.now();
+  const tick = ()=>{
+    const pct = Math.min(((Date.now()-start)/duration)*100, 95);
+    bar.style.width = pct+'%';
+    if(pct < 95) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+  return ()=>{ bar.style.width = '100%'; };
+}
+
+/* ===== TYPEWRITER ===== */
+function typeText(el, text, speed=18){
+  return new Promise(resolve=>{
+    el.classList.add('typing');
+    let i=0;
+    el.textContent = '';
+    const t = setInterval(()=>{
+      el.textContent += text[i++];
+      if(i>=text.length){ clearInterval(t); el.classList.remove('typing'); resolve(); }
+    }, speed);
+  });
+}
+
+/* ===== FORMAT JSON ===== */
+function formatJson(obj){
+  const j = JSON.stringify(obj, null, 2);
+  return j.replace(/"([^"]+)":/g,'<span class="json-key">"$1"</span>:')
+          .replace(/: "([^"]*)"/g,': <span class="json-str">"$1"</span>')
+          .replace(/: (\d+)/g,': <span class="json-num">$1</span>')
+          .replace(/: null/g,': <span class="json-null">null</span>');
+}
+
+/* ===== RUN DEMO ===== */
+async function runDemo(type){
+  const btn = document.getElementById('btn-'+type);
+  if(btn.classList.contains('running')) return;
+
+  const input = document.getElementById('input-'+type).value.trim();
+  if(!input){ alert('請先輸入內容！'); return; }
+
+  btn.classList.add('running');
+  btn.innerHTML = '<span class="spinner" style="display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin 0.8s linear infinite"></span> 處理中...';
+
+  const empty = document.getElementById('empty-'+type);
+  const result= document.getElementById('result-'+type);
+  empty.style.display = 'none';
+  result.classList.remove('show');
+
+  const elapsed = 1200 + Math.random()*1800;
+  const finish = animateProgress(type, elapsed);
+  document.getElementById('time-'+type).textContent = '';
+
+  await new Promise(r=>setTimeout(r, elapsed));
+  finish();
+  await new Promise(r=>setTimeout(r,200));
+
+  document.getElementById('elapsed-'+type).textContent = Math.round(elapsed)+'ms';
+  document.getElementById('time-'+type).textContent = new Date().toLocaleTimeString('zh-TW');
+
+  const inputVal = document.getElementById('input-'+type).value;
+  const idx = DEMO_DATA[type].inputs.findIndex(v=>inputVal.includes(v.slice(0,10))) ;
+  const safeIdx = idx >= 0 ? idx : 0;
+
+  result.classList.add('show');
+
+  if(type === 'extraction'){
+    const data = DEMO_DATA.extraction.results[Math.min(safeIdx, DEMO_DATA.extraction.results.length-1)];
+    document.getElementById('code-extraction').innerHTML = formatJson(data);
+  }
+  else if(type === 'workflow'){
+    const steps = safeIdx === 1 ? DEMO_DATA.workflow.steps_err : DEMO_DATA.workflow.steps_ok;
+    const container = document.getElementById('steps-workflow');
+    container.innerHTML = '';
+    for(let i=0; i<steps.length; i++){
+      await new Promise(r=>setTimeout(r, i===0?0:350));
+      const s = steps[i];
+      const el = document.createElement('div');
+      el.className = 'step-item';
+      el.style.animationDelay = i*0.05+'s';
+      el.innerHTML = `<div class="step-icon ${s.type}">${s.icon}</div>
+        <div class="step-content">
+          <div class="step-node">${s.node}</div>
+          <div class="step-msg">${s.msg}</div>
+        </div>`;
+      container.appendChild(el);
+    }
+  }
+  else if(type === 'parallel'){
+    const li = document.getElementById('linkedin-output');
+    const ig = document.getElementById('instagram-output');
+    li.textContent = ''; ig.textContent = '';
+    const lData = DEMO_DATA.parallel.linkedin[Math.min(safeIdx, 2)];
+    const iData = DEMO_DATA.parallel.instagram[Math.min(safeIdx, 2)];
+    await Promise.all([
+      typeText(li, lData, 14),
+      typeText(ig, iData, 14)
+    ]);
+  }
+  else if(type === 'rag'){
+    const docs = DEMO_DATA.rag.docs[Math.min(safeIdx, 2)];
+    const ans  = DEMO_DATA.rag.answers[Math.min(safeIdx, 2)];
+    const docsEl = document.getElementById('rag-docs');
+    docsEl.innerHTML = '<div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px">📄 相關文件</div>';
+    docs.forEach(d=>{
+      const el = document.createElement('div');
+      el.className = 'rag-doc-item';
+      el.innerHTML = `<span class="rag-doc-score">${d.score}</span><span>${d.text}</span>`;
+      docsEl.appendChild(el);
+    });
+    await typeText(document.getElementById('rag-answer-text'), ans, 12);
+  }
+
+  btn.classList.remove('running');
+  btn.innerHTML = {
+    extraction: '<span>✅</span> 再次提取',
+    workflow:   '<span>🔄</span> 再次執行',
+    parallel:   '<span>⚡</span> 再次分析',
+    rag:        '<span>🔍</span> 再次檢索'
+  }[type];
+}
+
+/* init extraction examples */
+setInput('extraction', 0, document.querySelector('#panel-extraction .example-chip'));
+</script>
+</body>
+</html>
