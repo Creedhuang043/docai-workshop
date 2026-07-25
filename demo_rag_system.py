@@ -3,9 +3,17 @@ Day 5-6: RAG (檢索增強生成) 系統
 展示：文檔檢索、向量化、問答系統
 """
 
+import os
+from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+
+load_dotenv()
+
+# 使用 Google Gemini 的 OpenAI 相容端點，金鑰請在 .env 中設定 GEMINI_API_KEY
+GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
 # ==================== 樣本文檔庫 ====================
 SAMPLE_DOCUMENTS = [
@@ -91,10 +99,16 @@ class RAGSystem:
     def __init__(self):
         """初始化 RAG 系統"""
         self.documents = SAMPLE_DOCUMENTS
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            raise RuntimeError(
+                "缺少 GEMINI_API_KEY 環境變數。請複製 .env.example 為 .env，"
+                "並填入你的 Gemini API Key（https://aistudio.google.com/apikey）。"
+            )
         self.llm = ChatOpenAI(
-            base_url="https://ws-02.wade0426.me/v1",
-            api_key="EMPTY",
-            model="google/gemma-3-27b-it",
+            base_url=GEMINI_BASE_URL,
+            api_key=api_key,
+            model=GEMINI_MODEL,
             temperature=0.7,
             max_tokens=512
         )

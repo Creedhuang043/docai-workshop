@@ -3,22 +3,37 @@ Day 2-4: LangChain 鏈式處理模組
 展示：數據提取、溫度參數、JSON 解析、並行處理
 """
 
+import os
+from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser
 from langchain_core.runnables import RunnableParallel
 import json
 
+load_dotenv()
+
 # ==================== 配置 ====================
+# 使用 Google Gemini 的 OpenAI 相容端點，金鑰請在 .env 中設定 GEMINI_API_KEY
+# 取得金鑰：https://aistudio.google.com/apikey
+GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+
 def get_llm(temperature: float = 0):
     """
     初始化 LLM 客戶端
     temperature: 0 = 確定性, 1 = 平衡, 1.5+ = 創意性
     """
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        raise RuntimeError(
+            "缺少 GEMINI_API_KEY 環境變數。請複製 .env.example 為 .env，"
+            "並填入你的 Gemini API Key（https://aistudio.google.com/apikey）。"
+        )
     return ChatOpenAI(
-        base_url="https://ws-02.wade0426.me/v1",
-        api_key="EMPTY",
-        model="google/gemma-3-27b-it",
+        base_url=GEMINI_BASE_URL,
+        api_key=api_key,
+        model=GEMINI_MODEL,
         temperature=temperature,
         max_tokens=256
     )

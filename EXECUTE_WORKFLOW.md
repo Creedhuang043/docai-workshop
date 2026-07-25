@@ -189,6 +189,28 @@ Successfully installed pip-...
 
 ---
 
+### 步驟 2.5.5：設定 Gemini API Key
+
+**背景：** 課程原本使用的 `ws-02.wade0426.me` 臨時推論伺服器已隨課程結束關閉，後端現在改用 Google Gemini。
+
+**執行命令：**
+```bash
+copy .env.example .env      # Windows
+cp .env.example .env        # Mac/Linux
+```
+
+**接著：**
+1. 前往 [https://aistudio.google.com/apikey](https://aistudio.google.com/apikey) 免費申請一組 API Key
+2. 用文字編輯器打開 `.env`，把 `GEMINI_API_KEY=your_gemini_api_key_here` 換成你自己的金鑰
+
+**如果失敗：**
+- ❌ 沒有 Google 帳號 → 先註冊一個免費 Google 帳號
+- ❌ 忘記填金鑰 → 後端會在啟動時可以正常跑，但呼叫 `/analyze` 會回傳 503 並提示缺少 `GEMINI_API_KEY`
+
+✅ **檢查點：** `.env` 已建立且填入有效金鑰
+
+---
+
 ### 步驟 2.6：安裝依賴
 
 **執行命令：**
@@ -216,11 +238,11 @@ pip list
 
 **預期看到：**
 ```
-fastapi            0.104.1
-uvicorn            0.24.0
-langchain          0.0.340
-langgraph          0.0.31
-langchain-openai   0.0.8
+fastapi            0.115.5
+uvicorn            0.32.1
+langchain          0.3.13
+langgraph          0.2.60
+langchain-openai   0.2.14
 ...
 ```
 
@@ -356,7 +378,7 @@ curl -X POST http://localhost:8000/analyze \
   "metadata": {
     "doc_type": "extraction",
     "execution_time": 2345.67,
-    "model": "gemma-3-27b-it"
+    "model": "gemini-2.5-flash"
   }
 }
 ```
@@ -418,7 +440,7 @@ http://localhost:8080/demo_docai_system_frontend.html
 }
 
 執行時間: 2345.67 ms
-模型: gemma-3-27b-it
+模型: gemini-2.5-flash
 ```
 
 ✅ **檢查點：** Day 2 數據提取功能正常

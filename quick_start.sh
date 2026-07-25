@@ -48,6 +48,16 @@ if [ $? -ne 0 ]; then
 fi
 echo "✅ 依賴安裝完成"
 
+# 檢查 .env 是否存在（用來放 Gemini API Key）
+if [ ! -f ".env" ]; then
+    echo ""
+    echo "⚠️  尚未設定 .env，正在從 .env.example 複製..."
+    cp .env.example .env
+    echo "⚠️  請打開 .env 填入你的 GEMINI_API_KEY 後再重新執行本腳本"
+    echo "   免費申請金鑰: https://aistudio.google.com/apikey"
+    exit 1
+fi
+
 # 啟動後端
 echo ""
 echo "=================================================="

@@ -8,3 +8,7 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
+      - key: GEMINI_API_KEY
+        sync: false   # 部署時 Render 會提示手動輸入，不會存進 repo
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash

@@ -14,7 +14,8 @@ import asyncio
 # 本地模塊導入
 from demo_llm_chain import (
     create_extraction_chain,
-    create_parallel_chain
+    create_parallel_chain,
+    GEMINI_MODEL
 )
 from demo_workflow import create_order_workflow
 from demo_rag_system import RAGSystem
@@ -32,10 +33,20 @@ app.add_middleware(
 )
 
 # 初始化各個系統
-extraction_chain = create_extraction_chain()
-parallel_chain = create_parallel_chain()
-order_workflow = create_order_workflow()
-rag_system = RAGSystem()
+# 若尚未設定 GEMINI_API_KEY，這裡不讓伺服器直接崩潰，而是延後到實際呼叫該功能時才回報錯誤，
+# 這樣 /health 仍可用來確認伺服器本身有正常啟動。
+_init_error = None
+try:
+    extraction_chain = create_extraction_chain()
+    parallel_chain = create_parallel_chain()
+    rag_system = RAGSystem()
+except RuntimeError as e:
+    _init_error = str(e)
+    extraction_chain = None
+    parallel_chain = None
+    rag_system = None
+
+order_workflow = create_order_workflow()  # 內部 LLM 呼叫是延遲執行，這裡建立 Graph 本身不需要金鑰
 
 # ==================== 數據模型 ====================
 class AnalysisRequest(BaseModel):
@@ -55,7 +66,9 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "DocAI System",
-        "version": "1.0.0"
+        "version": "1.0.0",
+        "llm_ready": _init_error is None,
+        "llm_error": _init_error
     }
 
 @app.post("/analyze")
@@ -69,6 +82,9 @@ async def analyze_document(request: AnalysisRequest):
     Day 5-6: RAG 檢索
     """
     start_time = time.time()
+
+    if _init_error and request.doc_type in ("extraction", "rag", "parallel"):
+        raise HTTPException(status_code=503, detail=_init_error)
 
     try:
         doc_type = request.doc_type
@@ -84,7 +100,7 @@ async def analyze_document(request: AnalysisRequest):
                 "metadata": {
                     "doc_type": "extraction",
                     "execution_time": (time.time() - start_time) * 1000,
-                    "model": "gemma-3-27b-it"
+                    "model": GEMINI_MODEL
                 }
             }
 
@@ -111,7 +127,7 @@ async def analyze_document(request: AnalysisRequest):
                 "metadata": {
                     "doc_type": "workflow",
                     "execution_time": (time.time() - start_time) * 1000,
-                    "model": "gemma-3-27b-it"
+                    "model": GEMINI_MODEL
                 }
             }
 
@@ -131,7 +147,7 @@ async def analyze_document(request: AnalysisRequest):
                 "metadata": {
                     "doc_type": "rag",
                     "execution_time": (time.time() - start_time) * 1000,
-                    "model": "gemma-3-27b-it",
+                    "model": GEMINI_MODEL,
                     "documents_retrieved": len(retrieved_docs)
                 }
             }
@@ -149,7 +165,7 @@ async def analyze_document(request: AnalysisRequest):
                 "metadata": {
                     "doc_type": "parallel",
                     "execution_time": (time.time() - start_time) * 1000,
-                    "model": "gemma-3-27b-it",
+                    "model": GEMINI_MODEL,
                     "parallel_chains": 2
                 }
             }
@@ -182,8 +198,7 @@ async def get_system_info():
             "Day 5-6: RAG 檢索增強"
         ],
         "models_supported": [
-            "google/gemma-3-27b-it",
-            "Qwen/Qwen2.5-1.5B-Instruct"
+            GEMINI_MODEL
         ]
     }
 
