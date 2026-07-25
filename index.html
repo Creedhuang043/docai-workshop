@@ -1169,79 +1169,154 @@ const observer = new IntersectionObserver(entries=>{
 },{threshold:0.12});
 document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
 
-/* ===== DEMO DATA ===== */
+/* ===== DEMO DATA (僅保留範例輸入，結果一律即時運算，不再是寫死的罐頭資料) ===== */
 const DEMO_DATA = {
   extraction: {
     inputs: [
       "我叫陳大明，電話是 0912-345-678，我想要訂購 3 台筆記型電腦，下週五送到台中市北區。",
       "客戶王小華，手機 0933-111-222，需要 2 支 iPhone 15，地址：新北市板橋區文化路100號。",
       "（自行輸入文字內容）"
-    ],
-    results: [
-      { name:"陳大明", phone:"0912-345-678", product:"筆記型電腦", quantity:3, location:"台中市北區" },
-      { name:"王小華", phone:"0933-111-222", product:"iPhone 15",  quantity:2, location:"新北市板橋區文化路100號" },
-      { name:"範例客戶", phone:"0900-000-000", product:"商品名稱",   quantity:1, location:"台北市" }
     ]
   },
   workflow: {
     inputs: [
       "我要訂購 10 台筆電，客戶名稱是李美琪，電話 0988-888-888，地址台南市。",
       "訂購 5 台顯示器，但我不確定送貨地址在哪，待確認。"
-    ],
-    steps_ok: [
-      { type:'agent',  icon:'🤖', node:'[agent] 分析輸入',  msg:'解析使用者需求：訂購 10 台筆電，已識別客戶資料。' },
-      { type:'tools',  icon:'🔧', node:'[tool] 資料提取',   msg:'調用 extraction_tool → name:李美琪 / qty:10 / location:台南市' },
-      { type:'tools',  icon:'✅', node:'[tool] 驗證資料',   msg:'所有必填欄位完整，數量 10 超過閾值，標記為大宗訂單。' },
-      { type:'agent',  icon:'📋', node:'[agent] 生成回應',  msg:'訂單已建立，大宗優惠適用，預計 3-5 個工作日到貨。' },
-      { type:'output', icon:'🎉', node:'[END] 流程完成',    msg:'工作流結束，共執行 4 個節點，耗時 3.2 秒。' }
-    ],
-    steps_err: [
-      { type:'agent',  icon:'🤖', node:'[agent] 分析輸入',  msg:'解析使用者需求：訂購 5 台顯示器，地址欄位缺失。' },
-      { type:'tools',  icon:'🔧', node:'[tool] 資料提取',   msg:'調用 extraction_tool → product:顯示器 / qty:5 / location:null' },
-      { type:'tools',  icon:'⚠️', node:'[tool] 驗證資料',   msg:'驗證失敗：location 為必填欄位，進入補件流程。' },
-      { type:'agent',  icon:'📩', node:'[agent] 請求補件',  msg:'已回覆客戶補齊地址資訊，訂單狀態設為「待確認」。' },
-      { type:'output', icon:'⏸️', node:'[PAUSE] 等待補件',  msg:'工作流暫停，等待客戶回覆地址後繼續。' }
     ]
   },
   parallel: {
-    inputs: ["人工智能的未來發展", "遠端工作趨勢", "永續能源發展"],
-    linkedin: [
-      "人工智能正在重塑全球產業格局。企業領導者需立即評估 AI 帶來的效率提升機會，同時建立完善的風險管理框架。未來三年，AI 素養將成為職場競爭力的核心指標。",
-      "遠端工作已不再是疫情副產品，而是人才競爭的新戰場。根據最新數據，提供彈性工作的企業人才留任率提升 35%。組織需重新設計協作流程與績效評估體系。",
-      "永續能源轉型是當代最重要的商業策略議題。ESG 報告顯示，積極佈局再生能源的企業，在資本市場的估值溢價達 18%。現在投資綠色技術，就是投資企業的未來競爭力。"
-    ],
-    instagram: [
-      "🤖 AI 來啦！你準備好了嗎？💡\n機器不是來搶你工作的——是來讓你更強大的！\n學 AI、用 AI、愛 AI！\n#AI革命 #未來已來 #科技改變生活 #人工智能 🚀✨",
-      "🏠💻 在家工作 = 人生勝利組！\n省通勤時間、穿著舒適、隨時抱貓辦公！\n遠端工作讓生活更 balance～\n#居家辦公 #WFH #工作與生活平衡 #自由工作者 ☕🐱",
-      "🌱☀️ 地球在呼救，我們來救場！\n太陽能、風力、電動車——綠色未來超帥氣！\n每個人的小選擇，都是地球的大改變！\n#永續生活 #綠色能源 #環保 #地球的未來我們決定 🌍💚"
-    ]
+    inputs: ["人工智能的未來發展", "遠端工作趨勢", "永續能源發展"]
   },
   rag: {
-    inputs: ["什麼是 LangGraph？", "RAG 的工作流程", "這個工作坊學什麼？"],
-    docs: [
-      [
-        { score:"0.95", text:"LangGraph 是 LangChain 的圖形處理擴展，使用狀態機模型定義複雜的 AI 工作流。核心概念包括 State（系統狀態）、Node（處理節點）、Edge（節點連接）..." },
-        { score:"0.82", text:"LangChain 是一個用於開發 LLM 應用程序的框架，核心概念包括 Chains（組合多步驟序列）、Prompts、Memory、Tools 與 Agents..." },
-        { score:"0.71", text:"RAG（檢索增強生成）是一種結合信息檢索和生成的技術，工作流程為：用戶提問 → 從文件庫檢索 → 注入上下文 → LLM 生成回答..." }
-      ],
-      [
-        { score:"0.97", text:"RAG（檢索增強生成）工作流程：1. 用戶提出問題 2. 系統從文檔庫中檢索相關信息 3. 將檢索的信息作為上下文 4. LLM 基於上下文生成答案..." },
-        { score:"0.78", text:"LangChain 的向量資料庫整合支援 FAISS、Chroma、Pinecone 等，配合 Embedding 模型將文件轉為向量，再以相似度搜尋找出相關片段..." },
-        { score:"0.65", text:"次世代 DocAI 系統工作坊 Day 5-6 專注於 RAG 系統實作，從文件切割、向量化到檢索策略，完整建立企業級知識庫問答系統..." }
-      ],
-      [
-        { score:"0.98", text:"次世代 DocAI 系統工作坊是一個全面的 AI 開發課程，為期 6 天，涵蓋 Git 版本控制、LangChain 鏈式處理、LangGraph 工作流、RAG 系統..." },
-        { score:"0.87", text:"課程採用 Python + FastAPI + LangChain 技術棧，搭配 Google Gemma-3-27B 大型語言模型，讓學員從零開始建立完整的 AI 文件分析系統..." },
-        { score:"0.74", text:"AI 基礎知識：人工智能是計算機科學的分支，主要應用包括機器學習、自然語言處理、計算機視覺與機器人技術..." }
-      ]
-    ],
-    answers: [
-      "LangGraph 是 LangChain 框架的圖形化工作流擴展，使用狀態機模型（State Machine）來定義複雜的多步驟 AI 流程。它的核心組件包括 State（記錄系統狀態）、Node（執行處理邏輯）、Edge（決定流程走向），特別適合構建需要條件分支和迴圈的 Agent 系統。",
-      "RAG 的完整工作流程分為四個階段：① 用戶輸入問題 → ② 系統將問題轉為向量，在文件庫中進行相似度搜尋，檢索最相關的 Top-K 文件片段 → ③ 將檢索到的文件作為上下文（Context）注入 Prompt → ④ LLM 基於上下文生成有根據的答案，大幅降低幻覺（Hallucination）問題。",
-      "這個工作坊為期 6 天，學習路徑從 Git 版本控制與前端基礎（Day 1）出發，逐步進入 LangChain 鏈式處理（Day 2）、LangGraph 工作流與 Tool Calling（Day 3）、並行處理（Day 4），最終實作完整的 RAG 檢索增強生成系統（Day 5-6），目標是讓學員能夠獨立開發企業級 AI 文件分析應用。"
-    ]
+    inputs: ["什麼是 LangGraph？", "RAG 的工作流程", "這個工作坊學什麼？"]
   }
 };
+
+/* ===== 即時提取邏輯（Day 2 概念的前端版：規則式解析，非寫死結果） ===== */
+function extractName(text){
+  const kw = text.match(/(?:我叫|客戶名稱是|客戶名稱[:：]|客戶)([^\s，,。！？0-9]{2,6})/);
+  if(kw) return kw[1];
+  const lead = text.match(/^[^一-龥]{0,4}([一-龥]{2,4})[，,]/);
+  return lead ? lead[1] : null;
+}
+function extractPhone(text){
+  const m = text.match(/0\d{1,3}[-\s]?\d{3,4}[-\s]?\d{3,4}/);
+  return m ? m[0] : null;
+}
+function extractProductQty(text){
+  const m = text.match(/(\d+)\s*(?:台|支|個|件|組|部|臺|份|次|包|盒|瓶)\s*([^，,。、！？\n]{1,14})/);
+  if(!m) return { quantity:null, product:null };
+  return { quantity: parseInt(m[1],10), product: m[2].trim() };
+}
+function extractLocation(text){
+  const m = text.match(/(?:送貨地址|收件地址|地址[:：]?|送到|送貨到|寄到)([^，,。！？\n]{1,20})/);
+  if(!m) return null;
+  const loc = m[1].trim();
+  if(!loc || /在哪|不確定|待確認|嗎|呢|\?|？/.test(loc)) return null;
+  return loc;
+}
+function extractOrderInfo(text){
+  const { quantity, product } = extractProductQty(text);
+  return {
+    name: extractName(text),
+    phone: extractPhone(text),
+    product,
+    quantity,
+    location: extractLocation(text)
+  };
+}
+
+/* ===== 即時工作流邏輯（Day 3 概念：依實際提取結果決定完整/補件路徑） ===== */
+function buildWorkflowSteps(text){
+  const info = extractOrderInfo(text);
+  const complete = !!(info.name && info.phone && info.product && info.quantity && info.location);
+  const summary = [
+    `name:${info.name || 'null'}`,
+    `phone:${info.phone || 'null'}`,
+    `product:${info.product || 'null'}`,
+    `qty:${info.quantity ?? 'null'}`,
+    `location:${info.location || 'null'}`
+  ].join(' / ');
+
+  if(complete){
+    const bulk = info.quantity >= 10;
+    return [
+      { type:'agent',  icon:'🤖', node:'[agent] 分析輸入',  msg:`解析使用者需求：訂購 ${info.quantity} ${info.product}，已識別客戶資料。` },
+      { type:'tools',  icon:'🔧', node:'[tool] 資料提取',   msg:`調用 extraction_tool → ${summary}` },
+      { type:'tools',  icon:'✅', node:'[tool] 驗證資料',   msg: bulk ? '所有必填欄位完整，數量超過閾值，標記為大宗訂單。' : '所有必填欄位完整，驗證通過。' },
+      { type:'agent',  icon:'📋', node:'[agent] 生成回應',  msg:`訂單已建立，客戶 ${info.name} 的訂單將於 3-5 個工作日內送達。` },
+      { type:'output', icon:'🎉', node:'[END] 流程完成',    msg:'工作流結束，共執行 4 個節點。' }
+    ];
+  }
+  const missing = ['name','phone','product','quantity','location'].filter(k=>!info[k] && info[k] !== 0);
+  return [
+    { type:'agent',  icon:'🤖', node:'[agent] 分析輸入',  msg:'解析使用者需求：偵測到部分欄位缺失。' },
+    { type:'tools',  icon:'🔧', node:'[tool] 資料提取',   msg:`調用 extraction_tool → ${summary}` },
+    { type:'tools',  icon:'⚠️', node:'[tool] 驗證資料',   msg:`驗證失敗：${missing.join('、')} 為必填欄位，進入補件流程。` },
+    { type:'agent',  icon:'📩', node:'[agent] 請求補件',  msg:'已回覆客戶補齊缺失資訊，訂單狀態設為「待確認」。' },
+    { type:'output', icon:'⏸️', node:'[PAUSE] 等待補件',  msg:'工作流暫停，等待客戶回覆後繼續。' }
+  ];
+}
+
+/* ===== 即時並行內容（Day 4 概念：主題套版生成，非寫死結果） ===== */
+function hashCode(s){
+  let h = 0;
+  for(let i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) | 0; }
+  return Math.abs(h);
+}
+function buildParallelContent(topicRaw){
+  const topic = (topicRaw || '').trim() || '這個主題';
+  const linkedinTemplates = [
+    t=>`${t}正在重塑產業格局。企業與專業人士需要及早評估其帶來的機會與風險，並建立因應的策略與能力，才能在轉型浪潮中保持競爭優勢。`,
+    t=>`談到${t}，值得注意的是它對職場模式與組織效率的深遠影響。領先企業已開始佈局，落後者恐將面臨人才與市場的雙重壓力。`,
+    t=>`${t}已成為近年最受關注的商業議題之一。數據顯示，提早佈局的企業在營運效率與人才吸引力上都取得明顯優勢，值得每位專業人士持續關注。`
+  ];
+  const igTemplates = [
+    t=>`✨ ${t}是認真的！\n這波浪潮誰跟上誰先贏 🚀\n快來一起討論你的看法吧～\n#${t.replace(/\s/g,'')} #熱門話題 #跟上潮流`,
+    t=>`😲 沒想到${t}這麼有趣！\n看完整個人都被圈粉了 💫\n留言告訴我你的想法！\n#${t.replace(/\s/g,'')} #必看 #漲知識`,
+    t=>`🔥 ${t}正在改變一切！\n慢一步可能就跟不上了 ⏰\n一起搶先了解吧！\n#${t.replace(/\s/g,'')} #搶先看 #別落隊`
+  ];
+  const h = hashCode(topic);
+  return {
+    linkedin: linkedinTemplates[h % linkedinTemplates.length](topic),
+    instagram: igTemplates[(h + 1) % igTemplates.length](topic)
+  };
+}
+
+/* ===== 即時 RAG 檢索（Day 5-6 概念：對文件庫做真實的關鍵字重疊比對） ===== */
+const RAG_DOCS = [
+  { id:'doc_001', title:'AI 基礎知識', content:'人工智能（AI）是計算機科學的一個分支，旨在創建能夠執行通常需要人類智能的任務的機器。主要應用領域包括機器學習、自然語言處理、計算機視覺與機器人技術。' },
+  { id:'doc_002', title:'LangChain 框架', content:'LangChain 是一個用於開發 LLM 應用程序的框架，核心概念包括 Chains（組合多步驟序列）、Prompts（用戶指令模板）、Memory（對話歷史）、Tools（外部函數集成）與 Agents（自主決策系統）。' },
+  { id:'doc_003', title:'LangGraph 工作流', content:'LangGraph 是 LangChain 的圖形處理擴展，使用狀態機模型定義複雜的工作流，核心概念包括 State（系統狀態）、Node（處理節點）、Edge（節點連接）與 Conditional Edge（條件分支），適合構建多步驟的 AI 流程。' },
+  { id:'doc_004', title:'RAG 技術', content:'RAG（檢索增強生成）是一種結合信息檢索和生成的技術，工作流程為：用戶提出問題 → 系統從文件庫中檢索相關信息 → 將檢索的信息作為上下文 → LLM 基於上下文生成答案，能提供更準確且有根據的回答。' },
+  { id:'doc_005', title:'次世代 DocAI 工作坊', content:'次世代 DocAI 系統工作坊是一個全面的 AI 開發課程，為期 6 天：Day 1 Git 和前端基礎、Day 2 LangChain 基礎、Day 3 Tool 和 LangGraph、Day 4 高級主題（並行處理）、Day 5-6 RAG 系統，採用 Python + FastAPI + LangChain 技術棧，搭配 Google Gemini 大型語言模型。' }
+];
+const RAG_KEYWORDS = ['langgraph','langchain','rag','fastapi','gemini','git','embedding','向量','檢索','工作流','狀態機','課程','工作坊','agent'];
+function ragRetrieve(query, topK=3){
+  const q = (query || '').trim();
+  if(!q) return [];
+  const qLower = q.toLowerCase();
+  const chars = Array.from(new Set(qLower.replace(/[，,。、！？\s]/g,'').split('')));
+  const scored = RAG_DOCS.map(doc=>{
+    const text = (doc.title + doc.content).toLowerCase();
+    const charHits = chars.filter(c=>text.includes(c)).length;
+    const charScore = chars.length ? charHits / chars.length : 0;
+    let bonus = 0;
+    RAG_KEYWORDS.forEach(k=>{ if(qLower.includes(k) && text.includes(k)) bonus += 0.15; });
+    return { doc, score: Math.min(1, charScore * 0.6 + bonus) };
+  });
+  scored.sort((a,b)=>b.score - a.score);
+  return scored.slice(0, topK);
+}
+function ragAnswer(query, scoredDocs){
+  const note = '（本靜態展示以關鍵字重疊比對模擬 RAG 檢索流程；真正的語意檢索與生成由 Day 5-6 LangChain + LLM 模組負責，見 demo_rag_system.py）';
+  if(!scoredDocs.length || scoredDocs[0].score < 0.05){
+    return `目前的文件庫中找不到與「${query}」直接相關的內容，可以試著詢問 LangChain、LangGraph、RAG 或本工作坊相關的問題。\n\n${note}`;
+  }
+  const top = scoredDocs[0].doc;
+  const snippet = top.content.slice(0, 100);
+  return `根據檢索到最相關的文件《${top.title}》：${snippet}${top.content.length>100?'...':''}\n\n${note}`;
+}
 
 /* ===== TAB SWITCH ===== */
 function switchTab(name){
@@ -1331,17 +1406,14 @@ async function runDemo(type){
   document.getElementById('time-'+type).textContent = new Date().toLocaleTimeString('zh-TW');
 
   const inputVal = document.getElementById('input-'+type).value;
-  const idx = DEMO_DATA[type].inputs.findIndex(v=>inputVal.includes(v.slice(0,10))) ;
-  const safeIdx = idx >= 0 ? idx : 0;
-
   result.classList.add('show');
 
   if(type === 'extraction'){
-    const data = DEMO_DATA.extraction.results[Math.min(safeIdx, DEMO_DATA.extraction.results.length-1)];
+    const data = extractOrderInfo(inputVal);
     document.getElementById('code-extraction').innerHTML = formatJson(data);
   }
   else if(type === 'workflow'){
-    const steps = safeIdx === 1 ? DEMO_DATA.workflow.steps_err : DEMO_DATA.workflow.steps_ok;
+    const steps = buildWorkflowSteps(inputVal);
     const container = document.getElementById('steps-workflow');
     container.innerHTML = '';
     for(let i=0; i<steps.length; i++){
@@ -1362,22 +1434,21 @@ async function runDemo(type){
     const li = document.getElementById('linkedin-output');
     const ig = document.getElementById('instagram-output');
     li.textContent = ''; ig.textContent = '';
-    const lData = DEMO_DATA.parallel.linkedin[Math.min(safeIdx, 2)];
-    const iData = DEMO_DATA.parallel.instagram[Math.min(safeIdx, 2)];
+    const { linkedin, instagram } = buildParallelContent(inputVal);
     await Promise.all([
-      typeText(li, lData, 14),
-      typeText(ig, iData, 14)
+      typeText(li, linkedin, 14),
+      typeText(ig, instagram, 14)
     ]);
   }
   else if(type === 'rag'){
-    const docs = DEMO_DATA.rag.docs[Math.min(safeIdx, 2)];
-    const ans  = DEMO_DATA.rag.answers[Math.min(safeIdx, 2)];
+    const scored = ragRetrieve(inputVal, 3);
+    const ans = ragAnswer(inputVal, scored);
     const docsEl = document.getElementById('rag-docs');
     docsEl.innerHTML = '<div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px">📄 相關文件</div>';
-    docs.forEach(d=>{
+    scored.forEach(({doc, score})=>{
       const el = document.createElement('div');
       el.className = 'rag-doc-item';
-      el.innerHTML = `<span class="rag-doc-score">${d.score}</span><span>${d.text}</span>`;
+      el.innerHTML = `<span class="rag-doc-score">${score.toFixed(2)}</span><span>${doc.title}：${doc.content.slice(0,80)}...</span>`;
       docsEl.appendChild(el);
     });
     await typeText(document.getElementById('rag-answer-text'), ans, 12);
