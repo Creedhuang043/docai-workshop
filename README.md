@@ -63,6 +63,20 @@ python demo_backend_main.py
 > 📌 課程原本使用的 `ws-02.wade0426.me` 臨時推論伺服器已隨課程結束關閉，
 > 後端現在改用 **Google Gemini**（透過 OpenAI 相容端點），需要你自行申請一組免費的 Gemini API Key。
 
+### ⚠️ 已知限制：Day 3 工作流（多輪工具呼叫）
+
+`demo_workflow.py` 的 LangGraph 訂單流程實測會在第二輪工具呼叫時出現：
+
+```
+400 INVALID_ARGUMENT: Function call is missing a thought_signature in functionCall parts.
+```
+
+原因：Gemini 3.x 等「思考型」模型要求多輪工具呼叫時原樣帶回上一輪的 `thought_signature`
+（內部推理簽章），但 LangChain 的 OpenAI 相容轉接層目前還不支援保留這個 Gemini 專屬欄位。
+extraction / parallel / rag 三個端點（單輪對話，無工具呼叫）已實測正常。
+若你的帳號還能存取 `gemini-2.0-flash` 這類舊一代模型（免費配額常見為 0，視帳號而定），
+可在 `.env` 設定 `GEMINI_WORKFLOW_MODEL=gemini-2.0-flash` 繞過此問題。
+
 ## 🏗️ 技術架構
 
 ```
@@ -78,7 +92,7 @@ Google Gemini（OpenAI 相容端點）
 - **LangChain** — LLM 鏈式應用框架
 - **LangGraph** — 圖形化 AI 工作流
 - **FastAPI** — 高效能 Python API
-- **Google Gemini** — 大語言模型（gemini-2.5-flash，可透過 `GEMINI_MODEL` 環境變數更換）
+- **Google Gemini** — 大語言模型（gemini-flash-latest，可透過 `GEMINI_MODEL` 環境變數更換）
 - **RAG** — 檢索增強生成技術
 
 ---

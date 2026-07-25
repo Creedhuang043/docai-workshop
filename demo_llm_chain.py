@@ -17,7 +17,7 @@ load_dotenv()
 # 使用 Google Gemini 的 OpenAI 相容端點，金鑰請在 .env 中設定 GEMINI_API_KEY
 # 取得金鑰：https://aistudio.google.com/apikey
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
 
 def get_llm(temperature: float = 0):
     """
@@ -35,7 +35,7 @@ def get_llm(temperature: float = 0):
         api_key=api_key,
         model=GEMINI_MODEL,
         temperature=temperature,
-        max_tokens=256
+        max_tokens=1024  # Gemini 的思考 token 會跟輸出共用這個額度，太小會讓輸出被截斷成空字串
     )
 
 # ==================== Day 2: 數據提取 ====================

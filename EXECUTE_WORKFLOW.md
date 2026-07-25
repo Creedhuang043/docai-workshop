@@ -378,7 +378,7 @@ curl -X POST http://localhost:8000/analyze \
   "metadata": {
     "doc_type": "extraction",
     "execution_time": 2345.67,
-    "model": "gemini-2.5-flash"
+    "model": "gemini-flash-latest"
   }
 }
 ```
@@ -440,7 +440,7 @@ http://localhost:8080/demo_docai_system_frontend.html
 }
 
 執行時間: 2345.67 ms
-模型: gemini-2.5-flash
+模型: gemini-flash-latest
 ```
 
 ✅ **檢查點：** Day 2 數據提取功能正常

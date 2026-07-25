@@ -18,7 +18,14 @@ load_dotenv()
 # ==================== 配置 ====================
 # 使用 Google Gemini 的 OpenAI 相容端點，金鑰請在 .env 中設定 GEMINI_API_KEY
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+# 已知限制：Gemini 3.x 等「思考型」模型在多輪工具呼叫時，會要求把前一輪的
+# thought_signature（內部推理簽章）原樣傳回去，但 LangChain 的 OpenAI 相容轉接層
+# 目前不會保留這個 Gemini 專屬欄位，導致第二輪工具結果送回時被 Gemini 以
+# 400 INVALID_ARGUMENT 拒絕（詳見 https://ai.google.dev/gemini-api/docs/thought-signatures）。
+# 若你的帳號還能用 gemini-2.0-flash 之類的舊一代模型（不強制要求 thought_signature），
+# 可透過 GEMINI_WORKFLOW_MODEL 指定該模型來繞過這個問題；新申請的帳號可能對舊模型
+# 配額為 0，此時只能維持用預設模型，並等待 LangChain 補上這個相容性支援。
+GEMINI_MODEL = os.getenv("GEMINI_WORKFLOW_MODEL", os.getenv("GEMINI_MODEL", "gemini-flash-latest"))
 
 def get_llm():
     """初始化 LLM"""
