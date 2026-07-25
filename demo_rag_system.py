@@ -5,6 +5,7 @@ Day 5-6: RAG (檢索增強生成) 系統
 
 import os
 from dotenv import load_dotenv
+from openai import OpenAI
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
@@ -14,6 +15,7 @@ load_dotenv()
 # 使用 Google Gemini 的 OpenAI 相容端點，金鑰請在 .env 中設定 GEMINI_API_KEY
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
+GEMINI_EMBEDDING_MODEL = os.getenv("GEMINI_EMBEDDING_MODEL", "gemini-embedding-001")
 
 # ==================== 樣本文檔庫 ====================
 SAMPLE_DOCUMENTS = [
@@ -112,36 +114,49 @@ class RAGSystem:
             temperature=0.7,
             max_tokens=1024  # Gemini 的思考 token 會跟輸出共用這個額度，太小會讓輸出被截斷成空字串
         )
+        self._embed_client = OpenAI(base_url=GEMINI_BASE_URL, api_key=api_key)
+        self._doc_embeddings = None  # 首次呼叫 retrieve() 時才算，之後常駐記憶體重複使用
+
+    def _embed(self, texts: list) -> list:
+        resp = self._embed_client.embeddings.create(model=GEMINI_EMBEDDING_MODEL, input=texts)
+        return [item.embedding for item in resp.data]
+
+    @staticmethod
+    def _cosine_similarity(a: list, b: list) -> float:
+        dot = sum(x * y for x, y in zip(a, b))
+        norm_a = sum(x * x for x in a) ** 0.5
+        norm_b = sum(x * x for x in b) ** 0.5
+        return dot / (norm_a * norm_b) if norm_a and norm_b else 0.0
 
     def retrieve(self, query: str, top_k: int = 3) -> list:
         """
         Day 5: 文檔檢索
-        使用簡單的文本相似度進行檢索
+        使用 Gemini embedding 將查詢與文件都轉成向量，以 cosine similarity 做真正的語意檢索
+        （而非單純的關鍵字重疊比對）
         """
+        if self._doc_embeddings is None:
+            texts = [doc["title"] + "\n" + doc["content"] for doc in self.documents]
+            self._doc_embeddings = self._embed(texts)
 
-        scores = []
+        query_embedding = self._embed([query])[0]
 
-        for doc in self.documents:
-            doc_text = (doc["title"] + " " + doc["content"]).lower()
-            query_lower = query.lower()
+        scored = [
+            {"doc": doc, "score": self._cosine_similarity(query_embedding, emb)}
+            for doc, emb in zip(self.documents, self._doc_embeddings)
+        ]
+        scored.sort(key=lambda item: item["score"], reverse=True)
 
-            query_words = query_lower.split()
-            overlap = sum(1 for word in query_words if word in doc_text)
-            score = overlap / len(query_words) if query_words else 0
-
-            scores.append((doc, score))
-
-        scores.sort(key=lambda x: x[1], reverse=True)
-        retrieved_docs = [doc for doc, score in scores[:top_k]]
-
-        return [doc["content"][:200] for doc in retrieved_docs]
+        return [
+            {"content": item["doc"]["content"][:200], "score": round(item["score"], 4)}
+            for item in scored[:top_k]
+        ]
 
     def generate_answer(self, query: str, context_docs: list) -> str:
         """
         Day 6: 基於上下文生成答案
         """
 
-        context = "\n\n".join(context_docs)
+        context = "\n\n".join(doc["content"] for doc in context_docs)
 
         prompt = ChatPromptTemplate.from_template("""
         基於以下文檔內容，請回答用戶的問題。

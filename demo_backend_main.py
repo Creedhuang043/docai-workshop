@@ -140,9 +140,9 @@ async def analyze_document(request: AnalysisRequest):
             response_data = {
                 "rag": {
                     "query": content,
-                    "retrieved_docs": retrieved_docs[:3],  # 前 3 個最相關文檔
+                    "retrieved_docs": [d["content"] for d in retrieved_docs],  # 前 3 個最相關文檔
                     "answer": answer,
-                    "relevance_scores": [0.95, 0.87, 0.78]
+                    "relevance_scores": [d["score"] for d in retrieved_docs]
                 },
                 "metadata": {
                     "doc_type": "rag",
