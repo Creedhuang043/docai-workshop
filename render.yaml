@@ -12,5 +12,7 @@ services:
         sync: false   # 部署時 Render 會提示手動輸入，不會存進 repo
       - key: GEMINI_MODEL
         value: gemini-flash-latest
+      - key: GEMINI_EMBEDDING_MODEL
+        value: gemini-embedding-001
       # Day 3 工作流（多輪工具呼叫）目前對 Gemini 3.x 思考型模型有已知相容性問題，
       # 若帳號有舊模型配額可設 GEMINI_WORKFLOW_MODEL=gemini-2.0-flash 繞過，詳見 .env.example
