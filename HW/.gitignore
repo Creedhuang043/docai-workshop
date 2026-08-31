@@ -1,0 +1,20 @@
+# 機密：API 金鑰
+.env
+
+# 大型/可重新產生的快取（不進版控）
+*.pkl
+embedding_cache.pkl
+score_cache.json
+
+# 執行紀錄
+*_run.log
+run.log
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# DeepEval 遙測暫存
+.deepeval/
+.deepeval

@@ -1,0 +1,72 @@
+{
+  "1": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.556
+  },
+  "2": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.667,
+    "Contextual_Precision": 0.583,
+    "Contextual_Relevancy": 0.6
+  },
+  "3": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 0.833,
+    "Contextual_Relevancy": 0.778
+  },
+  "4": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 0.833,
+    "Contextual_Relevancy": 0.538
+  },
+  "5": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.667,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.417
+  },
+  "6": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 0.8,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.2
+  },
+  "7": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.3
+  },
+  "8": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 0.833,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.75
+  },
+  "9": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.455
+  },
+  "10": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.429
+  }
+}

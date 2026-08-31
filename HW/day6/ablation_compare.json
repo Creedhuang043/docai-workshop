@@ -1,0 +1,35 @@
+{
+  "subset_q_ids": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10"
+  ],
+  "baseline": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 0.9633,
+    "Contextual_Recall": 0.8334,
+    "Contextual_Precision": 0.9249,
+    "Contextual_Relevancy": 0.5023
+  },
+  "optimized": {
+    "Faithfulness": 0.9833,
+    "Answer_Relevancy": 0.98,
+    "Contextual_Recall": 0.85,
+    "Contextual_Precision": 0.9583,
+    "Contextual_Relevancy": 0.5552
+  },
+  "improvement": {
+    "Faithfulness": -0.0167,
+    "Answer_Relevancy": 0.0167,
+    "Contextual_Recall": 0.0166,
+    "Contextual_Precision": 0.0334,
+    "Contextual_Relevancy": 0.0529
+  }
+}

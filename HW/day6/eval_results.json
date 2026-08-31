@@ -1,0 +1,212 @@
+{
+  "1": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.364
+  },
+  "2": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.636
+  },
+  "3": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.778
+  },
+  "4": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.5,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.6
+  },
+  "5": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.583
+  },
+  "6": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 0.8,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.222
+  },
+  "7": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.3
+  },
+  "8": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.727
+  },
+  "9": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 0.583,
+    "Contextual_Relevancy": 0.615
+  },
+  "10": {
+    "Faithfulness": 0.833,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.727
+  },
+  "11": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.5,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.429
+  },
+  "12": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.75,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.455
+  },
+  "13": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 0.5,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.818
+  },
+  "14": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.133
+  },
+  "15": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.667,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.692
+  },
+  "16": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.429
+  },
+  "17": {
+    "Faithfulness": 0.5,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.25
+  },
+  "18": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 0.667,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.091
+  },
+  "19": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.2
+  },
+  "20": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.231
+  },
+  "21": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.667,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.5
+  },
+  "22": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.667,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.75
+  },
+  "23": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.6,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.667
+  },
+  "24": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.333,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.455
+  },
+  "25": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.75,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.636
+  },
+  "26": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.4,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.4
+  },
+  "27": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.583
+  },
+  "28": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.667,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.9
+  },
+  "29": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 1.0,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.273
+  },
+  "30": {
+    "Faithfulness": 1.0,
+    "Answer_Relevancy": 1.0,
+    "Contextual_Recall": 0.75,
+    "Contextual_Precision": 1.0,
+    "Contextual_Relevancy": 0.778
+  }
+}
