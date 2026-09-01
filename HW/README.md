@@ -6,6 +6,101 @@ Day5 ~ Day7 的 RAG 系統實作與評估。所有分數皆為實際執行 API �
 
 模型：Google Gemini（`gemini-3.6-flash` 生成與評審、`gemini-embedding-001` 向量化，768 維）
 
+> ⚠️ **關於課程伺服器**：課程期間使用的 vLLM 推論伺服器
+> （`ws-02.wade0426.me`、`3090p8000.huannago.com`）已隨課程結束關閉，
+> 因此 Day2–Day4 的程式已改接 Google Gemini 的 OpenAI 相容端點。
+> 其餘課程服務經實測仍可使用，故保留原本呼叫方式：
+> ASR API（`3090api.huannago.com`）與 SearXNG（`puli-8080.huannago.com`）。
+
+---
+
+## Day2 — 平行化 AI 社群小編
+
+輸入一個主題，同時產出兩種風格的社群貼文，並比較「流式」與「批次」兩種執行方式。
+
+| 作業要求 | 實作位置 |
+|---|---|
+| 使用 RunnableParallel 平行處理 | `combo_chain` |
+| 兩種不同風格貼文 | LinkedIn 專業版 / IG 網紅版 |
+| 流式與批次各執行一次 | `run_streaming()` / `run_batch()` |
+| 批次需記錄處理時間 | `run_batch()` 內計時 |
+| temperature 設為 0 | `build_model()` |
+| 流式需看到不同主題交錯 | 以 `astream()` 非同步取回，逐 chunk 標示來源分支並統計切換次數 |
+
+原始範例用同步 `stream()`，兩個分支的 chunk 容易整批抵達、看不出交錯；
+改用 `astream()` 後由 asyncio 排程，交錯情形才真正可見，程式也會印出實際的分支切換次數作為佐證。
+
+| 檔案 | 說明 |
+|---|---|
+| `day2/day2_HW.py` | 主程式（執行後輸入主題即可） |
+
+---
+
+## Day3 — 智慧會議記錄助手
+
+以 LangGraph 的 node / edge 建構 Fan-out / Fan-in 流程，將語音轉成兩種產出。
+
+```
+        asr  ── 呼叫 ASR API 取得 TXT 逐字稿與 SRT 時間軸
+         │
+    ┌────┴────┐              ← Fan-out：兩節點平行執行
+minutes_taker  summarizer
+（時間軸逐字稿）（重點摘要）
+    └────┬────┘              ← Fan-in：匯聚
+       writer  ── 整合成最終報告
+```
+
+| 作業要求 | 實作位置 |
+|---|---|
+| 詳細逐字稿（按時間軸與台詞逐一列出） | `minutes_node()` 讀取 SRT |
+| 重點摘要 | `summary_node()` 讀取 TXT |
+| 必須使用 LangGraph node / edge | 4 個 node、6 條 edge，含平行與匯聚 |
+
+實測輸出（20 秒 Podcast 音檔，總耗時 46.8 秒）：
+
+```
+[00:00:00,000 - 00:00:03,440] 歡迎來到天下文化 Podcast，我是郝旭烈（郝哥）。
+[00:00:03,440 - 00:00:10,400] 今天要介紹一本非常棒的書，叫做《努力但不費力》…
+```
+
+| 檔案 | 說明 |
+|---|---|
+| `day3/day3_HW.py` | 主程式 |
+| `day3/audio/Podcast_EP14_20s.wav` | 測試音檔 |
+| `day3/meeting_report.md` | 實際執行產出的報告 |
+
+> 原始範例程式指向 `Podcast_EP14_30s.wav`，但實際檔案為 `_20s.wav`，已修正。
+
+---
+
+## Day4 — 具快取的 LangGraph 深度搜尋 Agent
+
+以 ReAct 式思考迴圈自主判斷資訊是否足夠，不足則再次搜尋；足夠才生成報告。
+
+```
+planner ──(CONTINUE)──> query_gen ──> search_tool ──> reasoning ──┐
+   ↑                                                              │
+   └──────────────────────────────────────────────────────────────┘
+   │
+   └──(DONE 或超過 3 輪)──> final_answer ──> END
+```
+
+| 技術 | 實作位置 |
+|---|---|
+| LangGraph 條件邊構成思考迴圈 | `planner_router()` + `add_conditional_edges` |
+| Pydantic 結構化輸出 | `PlanDecision` / `SearchQuery` / `ReasoningOutput` / `RelevanceCheck` |
+| Playwright 滾動截圖 + VLM 視覺閱讀 | `vlm_read_website()` |
+| SearXNG 搜尋 | `search_searxng()` |
+| JSON 快取 | `load_cache()` / `save_cache()` |
+
+| 檔案 | 說明 |
+|---|---|
+| `day4/day4_HW.py` | 主程式（可帶參數：`python day4_HW.py "你的問題"`） |
+
+> 移植到 Gemini 時修正一處相容性問題：`planner_node` 原本只送 `SystemMessage`，
+> 但 Gemini 要求請求中至少要有一則 user 訊息，否則回 `400 contents is not specified`，
+> 已補上 `HumanMessage`。
+
 ---
 
 ## Day5 — 三種切塊方法的檢索效果比較

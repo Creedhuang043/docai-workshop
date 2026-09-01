@@ -18,3 +18,9 @@ venv/
 # DeepEval 遙測暫存
 .deepeval/
 .deepeval
+
+# Day4：VLM 網頁截圖（每次執行重新產生，體積大不進版控）
+vlm_logs/
+
+# Day2/3/4 執行紀錄（保留 sample_output.txt 作為佐證）
+run.log
